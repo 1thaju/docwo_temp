@@ -19,7 +19,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({ icon, text, isActive, onClick
       }`}
       onClick={onClick} 
     >
-      <Image src={icon} alt={text} width={20} height={20} className={`${isActive ? '' : 'filter invert'}`} />
+      <Image src={icon} alt={text} width={20} height={20} className={`${isActive ? 'filter invert(10%) sepia(85%) saturate(2000%) hue-rotate(100deg) brightness(50%) contrast(100%)' : 'filter invert'}`} />
       <span className={`text-lg font-medium ${isActive ? 'text-[#07613d]' : 'text-white'}`}>{text}</span>
     </div>
   );

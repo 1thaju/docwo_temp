@@ -1,5 +1,6 @@
 import Sidebar from "../Components/Sidebar/Sidebar";
 import DashboardContent from "../Components/DashboardContent/DashboardContent";
+import Charts from "../Components/Charts/Charts";
 
 export default function DashBoard() {
   return (

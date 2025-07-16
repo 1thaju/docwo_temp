@@ -1,6 +1,7 @@
 "use client"
 import Image from 'next/image';
 import { useState } from 'react';
+import Charts from '../Charts/Charts';
 
 interface StatCardProps {
   icon: string;
@@ -29,8 +30,8 @@ export default function DashboardContent() {
 
   return (
     <div className="flex-grow bg-[#f0f2f5] rounded-4xl p-6 flex flex-col space-y-8 h-full">
-      {/* Top Bar */}
-      <div className="flex justify-between items-center bg-white rounded-xl  shadow-sm">
+      
+       <div className="flex justify-between items-center bg-white rounded-xl  shadow-sm">
         <div className="flex space-x-4 font-medium">
           <button 
             className={`h-full px-4 py-2 rounded-lg ${activeTab === 'TODAY' ? 'bg-[#07613d] text-white' : 'text-[#006F4C] hover:bg-gray-100'}`}
@@ -62,11 +63,11 @@ export default function DashboardContent() {
           <span className="text-green-700 font-medium">Ajmal Ashrudheen</span>
           <span className="text-gray-500 text-sm flex justify-end">Admin</span>
             </div>
-          <Image src="/Logo.svg" alt="User Avatar" width={35} height={35} className="rounded-full border border-red-500 mb-2" /> {/* Placeholder for user avatar */}
+          <Image src="/Logo.svg" alt="User Avatar" width={35} height={35} className="rounded-full border border-red-500 mb-2" /> 
         </div>
       </div>
+      {/*
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-4 gap-6 flex-grow">
         <StatCard icon="/Logo.svg" title="APPOINTMENTS" value="220" description="Total appointments" />
         <StatCard icon="/Logo.svg" title="PATIENTS" value="220" description="Total patients" />
@@ -76,7 +77,8 @@ export default function DashboardContent() {
         <StatCard icon="/Logo.svg" title="PAYMENTS" value="220" description="Total appointments" />
         <StatCard icon="/Logo.svg" title="PERFORMANCE" value="220" description="Total appointments" />
         <StatCard icon="/Logo.svg" title="REFERRAL AND SOURCE TRACKING" value="220" description="Total appointments" />
-      </div>
-    </div>
+      </div>*/}
+      <Charts className = "w-full"/>
+    </div> 
   );
 } 
