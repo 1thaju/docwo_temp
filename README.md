@@ -34,3 +34,15 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Project Details
+
+### Full Stack Developer - Docwo
+**Duration:** Present - (One Month)
+
+**Responsibilities and Achievements:**
+*   Developing a full-stack healthcare management system using Node.js, Express, Prisma ORM, and PostgreSQL with a focus on scalability and maintainability.
+*   Building and maintaining secure RESTful APIs with JWT-based authentication, role-based access control, robust validation, and error handling.
+*   Implementing data visualization features using Recharts to display analytical data (e.g., patient trends, appointments).
+*   Utilizing Next.js for server-side rendering and client-side routing to create a responsive and efficient user interface.
+*   Designing and developing interactive and dynamic dashboards for healthcare management.

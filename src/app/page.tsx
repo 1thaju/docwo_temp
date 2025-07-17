@@ -1,5 +1,5 @@
 import DashBoard from "./Pages/DashBoard";
-import Charts from "./Components/Charts/Charts";
+import Charts from "./Components/Charts/LineCharts";
 
 export default function Home() {
   return (

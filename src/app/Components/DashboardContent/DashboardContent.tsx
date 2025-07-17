@@ -1,7 +1,10 @@
 "use client"
 import Image from 'next/image';
 import { useState } from 'react';
-import Charts from '../Charts/Charts';
+import LineChart from '../Charts/LineCharts';
+
+import PieChartStatus from '../Charts/PieChartStatus';
+
 
 interface StatCardProps {
   icon: string;
@@ -12,7 +15,7 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ icon, title, value, description }) => {
   return (
-    <div className="bg-white rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-md min-h-40">
+    <div className="bg-[#ebebeb] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-md min-h-40 shadow-custom-shadow">
       <Image src={icon} alt={title} width={70} height={70} className="mb-3 border border-red-500" />
       <h3 className="text-sm font-semibold uppercase text-gray-500 mb-1">{title}</h3>
       <p className="text-3xl font-bold text-gray-800">{value}</p>
@@ -29,7 +32,7 @@ export default function DashboardContent() {
   };
 
   return (
-    <div className="flex-grow bg-[#f0f2f5] rounded-4xl p-6 flex flex-col space-y-8 h-full">
+    <div className="flex-grow bg-[#ebebeb] rounded-4xl p-6 flex flex-col space-y-8 h-full overflow-y-auto scrollbar-hide ">
       
        <div className="flex justify-between items-center bg-white rounded-xl  shadow-sm">
         <div className="flex space-x-4 font-medium">
@@ -66,8 +69,7 @@ export default function DashboardContent() {
           <Image src="/Logo.svg" alt="User Avatar" width={35} height={35} className="rounded-full border border-red-500 mb-2" /> 
         </div>
       </div>
-      {/*
-
+    
       <div className="grid grid-cols-4 gap-6 flex-grow">
         <StatCard icon="/Logo.svg" title="APPOINTMENTS" value="220" description="Total appointments" />
         <StatCard icon="/Logo.svg" title="PATIENTS" value="220" description="Total patients" />
@@ -77,8 +79,11 @@ export default function DashboardContent() {
         <StatCard icon="/Logo.svg" title="PAYMENTS" value="220" description="Total appointments" />
         <StatCard icon="/Logo.svg" title="PERFORMANCE" value="220" description="Total appointments" />
         <StatCard icon="/Logo.svg" title="REFERRAL AND SOURCE TRACKING" value="220" description="Total appointments" />
-      </div>*/}
-      <Charts className = "w-full"/>
+      </div>
+      <div className="bg-white rounded-2xl p-10 shadow-md shadow-custom-shadow w-full">
+        <LineChart />
+        <PieChartStatus/>
+      </div>
     </div> 
   );
 } 
