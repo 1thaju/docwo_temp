@@ -33,7 +33,7 @@ export default function DashboardContent() {
   };
 
   return (
-    <div className="flex-grow bg-[#ebebeb] rounded-4xl rounded-b-none p-6 flex flex-col space-y-8 h-full overflow-y-auto scrollbar-hide ">
+    <div className="flex-grow p-0 flex flex-col space-y-8 h-full overflow-y-auto scrollbar-hide ml-0">
       
        <div className="flex justify-between items-center bg-white rounded-xl  shadow-sm">
         <div className="flex space-x-4 font-medium">
