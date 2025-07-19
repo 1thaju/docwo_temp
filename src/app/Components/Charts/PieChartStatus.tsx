@@ -1,5 +1,6 @@
 "use client";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { Appointment } from '../Appointments/useAppointmentsData';
 
 const data = [
   { name: "Completed", value: 45, color: "#4CAF50" },
@@ -43,13 +44,28 @@ const renderCustomizedLabel = ({
   );
 };
 
-export default function PieChartStatus() {
+interface PieChartStatusProps {
+  appointments?: Appointment[];
+}
+
+export default function PieChartStatus({ appointments }: PieChartStatusProps) {
+  let pieData = data;
+  if (appointments && appointments.length > 0) {
+    const completed = appointments.filter(a => a.status === 'completed').length;
+    const cancelled = appointments.filter(a => a.status && a.status.includes('cancelled')).length;
+    const upcoming = appointments.length - completed - cancelled;
+    pieData = [
+      { name: 'Completed', value: completed, color: '#4CAF50' },
+      { name: 'Cancelled', value: cancelled, color: '#7D6DC2' },
+      { name: 'Upcoming', value: upcoming, color: '#DFBE7F' },
+    ];
+  }
   return (
     <div style={{ width: "100%", height: 300 }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
-            data={data}
+            data={pieData}
             cx="50%"
             cy="50%"
             labelLine={false}
@@ -61,7 +77,7 @@ export default function PieChartStatus() {
             stroke="#fff"
             strokeWidth={3}
           >
-            {data.map((entry, index) => (
+            {pieData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>

@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { Appointment } from '../Appointments/useAppointmentsData';
 
 const data = [
   { date: "2024-01-01", Cancelled: 5, Completed: 60, "Total Appointment": 70 },
@@ -35,12 +36,31 @@ const legendItem = (color: string, label: string) => (
   </span>
 );
 
-export default function CustomLineChart() {
+interface LineChartProps {
+  appointments?: Appointment[];
+}
+
+export default function CustomLineChart({ appointments }: LineChartProps) {
+  // If appointments are provided, generate chart data dynamically
+  let chartData = data;
+  if (appointments && appointments.length > 0) {
+    // Example: group by date and count statuses
+    const grouped: Record<string, { Cancelled: number; Completed: number; 'Total Appointment': number }> = {};
+    appointments.forEach((a: Appointment) => {
+      // Assume a.date field exists; adjust as needed
+      const date = (a as any).date || 'Unknown';
+      if (!grouped[date]) grouped[date] = { Cancelled: 0, Completed: 0, 'Total Appointment': 0 };
+      grouped[date]['Total Appointment']++;
+      if (a.status === 'completed') grouped[date]['Completed']++;
+      if (a.status && a.status.includes('cancelled')) grouped[date]['Cancelled']++;
+    });
+    chartData = Object.entries(grouped).map(([date, counts]) => ({ date, ...counts }));
+  }
   return (
     <div style={{ width: "100%", height: 300, background: "#fff" }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
-          data={data}
+          data={chartData}
           margin={{ top: 10, right: 30, left: 10, bottom: 30 }}
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
