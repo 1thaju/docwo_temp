@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import LineChart from '../Charts/LineCharts';
 import PieChartStatus from '../Charts/PieChartStatus';
+import AppointmentHeatmapCalendar from './AppointmentHeatmapCalendar';
 
 type Appointment = {
   status?: string;
@@ -142,6 +143,9 @@ export default function Appointments() {
         })}
       </div>
 
+      {/* Heatmap Calendar Section */}
+      
+
       {/* Analytics Section (static for now) */}
       <div className="rounded-md p-2 mb-6">
         <div className="text-center text-gray-700 font-medium mb-2 bg-gray-200 rounded-sm">Analytics</div>
@@ -153,6 +157,9 @@ export default function Appointments() {
           <div className="font-medium mb-2">Appointment status</div>
           <PieChartStatus />
         </div>
+        <div className="bg-white rounded-xl p-6 mb-8 shadow border border-gray-200">
+        <AppointmentHeatmapCalendar />
+      </div>
       </div>
     </div>
   );
