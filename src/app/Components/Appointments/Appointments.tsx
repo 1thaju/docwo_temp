@@ -9,22 +9,51 @@ type Appointment = {
   // Add more fields as needed
 };
 
-// Utility function to fetch appointments from the backend
-async function fetchMyAppointments(token: string, params: Record<string, string | number> = {}): Promise<any> {
-  const BASE_URL = 'https://docwo-api.onrender.com/api/v1/appointments/me';
+// Utility function to fetch appointments for a clinic from the backend
+async function fetchClinicAppointments(token: string, clinicId: string, params: Record<string, string | number> = {}): Promise<any> {
+  const BASE_URL = `https://docwo-api.onrender.com/api/v1/clinics/${clinicId}/appointments`;
   const url = new URL(BASE_URL);
   Object.entries(params).forEach(([k, v]) => url.searchParams.append(k, String(v)));
   const res = await fetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!res.ok) throw new Error('Failed to fetch appointments');
+  if (!res.ok) throw new Error('Failed to fetch clinic appointments');
   return res.json();
+}
+
+// Utility function to fetch doctors for a clinic
+async function fetchClinicDoctors(token: string, clinicId: string, params: Record<string, string | number> = {}): Promise<any> {
+  const BASE_URL = `https://docwo-api.onrender.com/api/v1/clinics/${clinicId}/doctors`;
+  const url = new URL(BASE_URL);
+  // Always set limit and page as in Swagger
+  url.searchParams.set('limit', params.limit?.toString() || '10');
+  url.searchParams.set('page', params.page?.toString() || '1');
+  const fullUrl = url.toString();
+  console.log('Fetching doctors from:', fullUrl);
+  const res = await fetch(fullUrl, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      accept: 'application/json',
+    },
+  });
+  let json;
+  try {
+    json = await res.json();
+  } catch (e) {
+    console.error('Failed to parse JSON:', e);
+    throw e;
+  }
+  if (!res.ok) {
+    console.error('Error fetching doctors:', res.status, json);
+    throw new Error('Failed to fetch clinic doctors');
+  }
+  console.log('Doctors API response:', json);
+  return json;
 }
 
 // Dummy function: Replace with your actual auth token retrieval logic
 function getAccessToken(): string {
-  // e.g., return localStorage.getItem('accessToken');
-  return '';
+  return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImVtYWlsIjoiYWJjZEBlZmdoLmNvbSIsInJvbGVzIjpbImFkbWluIl0sImlhdCI6MTc1MzA3MDg3NiwiZXhwIjoxNzUzMTU3Mjc2fQ.O3aD93L5EL6E3eqgTdmrW2RxfUNCpvWhnC5nM6xhYxc';
 }
 
 export default function Appointments() {
@@ -39,6 +68,7 @@ export default function Appointments() {
     { label: 'Cancellation Rate', value: '-', change: 0, changeText: '' },
     { label: 'Completion Rate', value: '-', change: 0, changeText: '' },
   ]);
+  const [doctors, setDoctors] = useState<{ doctor_id: string; users: { first_name: string; last_name: string } }[]>([]);
 
   useEffect(() => {
     async function loadAppointments() {
@@ -47,8 +77,18 @@ export default function Appointments() {
       try {
         const token = getAccessToken();
         if (!token) throw new Error('Not authenticated');
-        const data = await fetchMyAppointments(token, { limit: 100 });
-        const appts: Appointment[] = data.data || data.results || [];
+        const clinicId = '1'; // TODO: Replace with dynamic clinicId if needed
+        const data = await fetchClinicAppointments(token, clinicId, {
+          sortBy: 'booking_timestamp:desc',
+          limit: 100,
+          page: 1,
+        });
+        console.log('Clinic Appointments API response:', data);
+        console.log('Raw API response:', data);
+        console.log('Appointments array:', data.data);
+        console.log('Appointments count:', data.data ? data.data.length : 0);
+        const appts: Appointment[] = data.data || [];
+        console.log('Fetched appointments count:', appts.length);
         setAppointments(appts);
         // Compute stats
         const total = appts.length;
@@ -72,6 +112,23 @@ export default function Appointments() {
       }
     }
     loadAppointments();
+  }, []);
+
+  useEffect(() => {
+    async function loadDoctors() {
+      try {
+        const token = getAccessToken();
+        const clinicId = '1';
+        const data = await fetchClinicDoctors(token, clinicId, { limit: 100 });
+        // Assume data.data is the array of doctors
+        setDoctors(data.data || []);
+        console.log(doctors)
+      } catch (err) {
+        // Optionally handle error
+        setDoctors([]);
+      }
+    }
+    loadDoctors();
   }, []);
 
   return (
@@ -109,8 +166,11 @@ export default function Appointments() {
             <label className="text-xs font-semibold text-black-500 mb-1 " htmlFor="doctor">Doctor</label>
             <select id="doctor" className="border rounded-lg px-3 py-2 text-gray-700 focus:outline-none font-semibold text-xs border-none w-fit">
               <option>All Doctors</option>
-              <option>Dr. Smith</option>
-              <option>Dr. Jane</option>
+              {doctors.map((doc) => (
+                <option key={doc.doctor_id} value={doc.doctor_id}>
+                  {doc.users?.first_name} {doc.users?.last_name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="flex flex-col">
@@ -143,7 +203,6 @@ export default function Appointments() {
         })}
       </div>
 
-      {/* Heatmap Calendar Section */}
       
 
       {/* Analytics Section (static for now) */}
@@ -151,11 +210,11 @@ export default function Appointments() {
         <div className="text-center text-gray-700 font-medium mb-2 bg-gray-200 rounded-sm">Analytics</div>
         <div className="bg-white rounded-xl p-4 mb-6 shadow border border-gray-200 pb-10">
           <div className="font-medium mb-2">Appointments Trends Over Time</div>
-          <LineChart />
+          <LineChart appointments={appointments} />
         </div>
         <div className="bg-white rounded-xl p-4 shadow border border-gray-200">
           <div className="font-medium mb-2">Appointment status</div>
-          <PieChartStatus />
+          <PieChartStatus appointments={appointments} />
         </div>
         <div className="bg-white rounded-xl p-6 mb-8 shadow border border-gray-200">
         <AppointmentHeatmapCalendar />

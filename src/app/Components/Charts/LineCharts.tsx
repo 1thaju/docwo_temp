@@ -44,11 +44,15 @@ export default function CustomLineChart({ appointments }: LineChartProps) {
   // If appointments are provided, generate chart data dynamically
   let chartData = data;
   if (appointments && appointments.length > 0) {
-    // Example: group by date and count statuses
+    // Group by booking date (YYYY-MM-DD) and count statuses
     const grouped: Record<string, { Cancelled: number; Completed: number; 'Total Appointment': number }> = {};
     appointments.forEach((a: Appointment) => {
-      // Assume a.date field exists; adjust as needed
-      const date = (a as any).date || 'Unknown';
+      // Use booking_timestamp as the date, formatted as YYYY-MM-DD
+      const rawDate = (a as any).booking_timestamp;
+      let date = 'Unknown';
+      if (rawDate) {
+        date = new Date(rawDate).toISOString().slice(0, 10);
+      }
       if (!grouped[date]) grouped[date] = { Cancelled: 0, Completed: 0, 'Total Appointment': 0 };
       grouped[date]['Total Appointment']++;
       if (a.status === 'completed') grouped[date]['Completed']++;
